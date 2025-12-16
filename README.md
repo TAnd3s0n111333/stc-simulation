@@ -31,3 +31,42 @@ Fidelity increases incrementally across roadmap phases.
 
 ## Repository Structure
 
+stc-simulation/
+- src/
+  - environment/ # Terrain, climate, resource models
+  - modules/ # Module behaviour implementations
+  - planning/ # Planning and optimisation logic
+  - simulation/ # State engine and time stepping
+  - metrics/ # Evaluation and validation metrics
+- experiments/ # Exploratory simulations
+- configs/ # Scenario configurations
+- README.md
+
+## Relationship to the STC
+
+This repository validates:
+- STC module definitions
+- planning decisions
+- system-level interactions
+
+All simulations conform to interfaces defined in `stc-core`.
+
+## Status
+
+**Phase 1 — Foundations**  
+Early discrete-time simulation with simplified models.
+
+## Roadmap Alignment
+
+- Phase 1: single-module and small system simulations
+- Phase 2: integrated multi-module planning
+- Phase 3+: hardware-in-the-loop and multi-agent simulation
+
+## License
+
+Apache License 2.0
+
+## Author
+
+Toby Anderson  
+Robotics & Mechatronics Engineering (AI) — Monash University
