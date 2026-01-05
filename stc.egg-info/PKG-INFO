@@ -1,6 +1,0 @@
-Metadata-Version: 2.4
-Name: stc
-Version: 0.1.0
-Summary: Space Transport & Colonization Core Logic
-Requires-Dist: pyyaml
-Requires-Dist: jsonschema
