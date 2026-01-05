@@ -1,0 +1,12 @@
+id: mars_surface
+name: Mars Surface
+gravity: 3.71
+temperature: { min: -125.0, max: 20.0 }
+radiation: 0.67
+atmosphere: 
+  pressure: 0.006
+  composition: { CO2: 0.95, N2: 0.03 }
+solar_flux: 590.0
+terrain: rocky
+tags: ["regolith"]
+initial_resources: { battery: 100, food: 6 }

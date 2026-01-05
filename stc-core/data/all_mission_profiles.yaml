@@ -1,0 +1,78 @@
+missions: 
+  - id: "MARS_ESTABLISHMENT"
+    environment: "mars_surface"
+    description: "Establish a 3-day foothold on Mars with resource reserves."
+    duration_hours: 72
+    requirements:
+      duration:
+        metric: "hours"
+        minimum: 72.0
+      oxygen: # Oxygen autonomy
+        metric: "kg"
+        minimum: 10.0
+      power: # Power resilience
+        metric: "kWh"
+        minimum: 200.0
+      food:
+        metric: "Unit"
+        minimum: 10
+
+  - id: "LUNAR_NIGHT_SURVIVAL"
+    environment: "moon_surface"
+    description: "Survive the lunar night by managing battery discharge and thermal protection."
+    duration_hours: 354
+    requirements:
+      energy_storage:
+        metric: "Battery_Array_Lithium"
+        minimum: 6.0
+      thermal_integrity:
+        metric: "min_temp_celsius"
+        minimum: -10.0
+      radiation_shielding:
+        metric: "milliSieverts"
+        maximum: 50.0
+
+  - id: "VENUS_ATMOSPHERIC_GARDEN"
+    environment: "venus_high_atmo"
+    description: "Deploy a high-altitude farm to leverage 2600 W/m² solar flux."
+    duration_hours: 48
+    requirements:
+      solar_generation:
+        metric: "Solar_Array_Large"
+        minimum: 2.0
+      food_production:
+        metric: "kg"
+        minimum: 24.0
+      pressure_stability:
+        metric: "bar"
+        minimum: 1.0
+
+  - id: "TITAN_METHANE_SIFTING"
+    environment: "titan_surface"
+    description: "Extract minerals from the icy-liquid terrain of Titan under dim light."
+    duration_hours: 96
+    requirements:
+      industrial_throughput:
+        metric: "Regolith_Sifter"
+        minimum: 1.0
+      power_efficiency:
+        metric: "kWh_per_hour"
+        maximum: 30.0
+      gravity_tolerance:
+        metric: "max_g"
+        maximum: 1.35
+
+  - id: "MARS_INDUSTRIAL_LOOP"
+    environment: "mars_surface"
+    description: "Refine Martian soil to expand the habitat and support a growing colony."
+    duration_hours: 168
+    requirements:
+      resource_refining:
+        metric: "refined_silicon"
+        minimum: 840.0
+      population_support:
+        metric: "Colonist"
+        minimum: 4.0
+      habitat_pressurization:
+        metric: "Inflatable_Hab_V1"
+        minimum: 1.0

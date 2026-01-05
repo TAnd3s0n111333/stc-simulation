@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "title": "All Agents File Schema",
+  "required": ["agents"],
+  "properties": {
+    "agents": {
+      "type": "array",
+      "description": "A list of all agents.",
+      "items": {
+        "$ref": "single_agent.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}

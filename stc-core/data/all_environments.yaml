@@ -1,0 +1,52 @@
+environments:
+  - id: mars_surface
+    name: Mars Surface
+    gravity: 3.71
+    temperature: { min: -125.0, max: 20.0 }
+    radiation: 0.67
+    atmosphere: 
+      pressure: 0.006
+      composition: { CO2: 0.95, N2: 0.03 }
+    solar_flux: 590.0
+    terrain: rocky
+    tags: ["regolith", "perchlorates", "permafrost"]
+    initial_resources: { power: 200, oxygen: 50, light: 10, water: 10}
+
+  - id: moon_surface
+    name: Moon Surface
+    gravity: 1.62
+    temperature: { min: -173.0, max: 127.0 }
+    radiation: 200.0
+    atmosphere: 
+      pressure: 0.0
+      composition: {}
+    solar_flux: 1361.0
+    terrain: dusty
+    tags: ["regolith", "helium3"]
+    initial_resources: { power: 50 }
+
+  - id: venus_high_atmo
+    name: Venusian Upper Atmosphere
+    gravity: 8.87
+    temperature: { min: 20.0, max: 50.0 }
+    radiation: 0.5
+    atmosphere: 
+      pressure: 1.0
+      composition: { CO2: 0.96, N2: 0.03 }
+    solar_flux: 2600.0
+    terrain: aerial
+    tags: ["acid_clouds"]
+    initial_resources: { power: 10 }
+
+  - id: titan_surface
+    name: Titan Surface
+    gravity: 1.35
+    temperature: { min: -180.0, max: -178.0 }
+    radiation: 0.01
+    atmosphere: 
+      pressure: 1.45
+      composition: { N2: 0.95, CH4: 0.05 }
+    solar_flux: 15.0
+    terrain: icy_liquid
+    tags: ["methane_lakes"]
+    initial_resources: { power: 20 }

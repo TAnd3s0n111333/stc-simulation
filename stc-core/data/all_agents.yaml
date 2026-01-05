@@ -1,0 +1,19 @@
+agents:
+  - name: human
+    inputs: {food: 0.125, oxygen: 0.2, water: 0.375, habitat_space: 1}
+    outputs: {labour: 8, waste: 0.1}
+    temp_range: [22, 27]
+    pressure_range: [0.0, 1.0]
+    max_gravity: 14.7
+    requires_env_tags: ["pressurized"]
+    description: ["An adult human colnists, provides labour to run and maintain modules."]
+
+  - name: robot
+    inputs: {power: 5, mechanical_part: 0.5}
+    outputs: {labour: 24}
+    temp_range: [-50, 50]
+    pressure_range: [0.0, 5.0]
+    max_gravity: 30
+    requires_env_tags: []
+    description: ["A basic robotic worker that provides 24/7 labour."]
+

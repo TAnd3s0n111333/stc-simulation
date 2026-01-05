@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "title": "All Environments File Schema",
+  "required": ["environments"],
+  "properties": {
+    "environments": {
+      "type": "array",
+      "description": "A list of all possible environment configurations.",
+      "items": {
+        "$ref": "single_environment_schema.json"
+      }
+    }
+  },
+  "additionalProperties": false
+}

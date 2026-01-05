@@ -1,0 +1,187 @@
+modules:
+  - name: Solar_Array
+    inputs: { solar_exposure: 1.0 }
+    outputs: { power: 50.0 }
+    temp_range: [-150.0, 120.0]
+    pressure_range: [0.0, 2.0]
+    max_gravity: 30.0
+    requires_env_tags: []
+    mass_tier: ["massive"]
+    complexity_tier: ["medium"]
+    description: ["Generates power from solar energy, power ouput tied to solar flux and day-night cycle."]
+
+  - name: Battery_Array_Lithium
+    inputs: { power: 0.5 } # Parasitic drain to keep systems warm
+    outputs: { capacity: 100.0, discharge_out: 20.0 } 
+    temp_range: [-10.0, 40.0]
+    pressure_range: [0.0, 1.0]
+    max_gravity: 10.0
+    requires_env_tags: ["pressurized"]
+    mass_tier: ["standard"]
+    complexity_tier: ["medium"]
+    description: ["Stores collected power for when ouput is less than input, discharging power as required."]
+
+  - name: Regolith_Sifter 
+    inputs: { power: 25.0 }
+    outputs: { refined_silicon: 5.0, iron_ore: 2.0 }
+    temp_range: [-100.0, 80.0]
+    pressure_range: [0.0, 10.0]
+    max_gravity: 25.0
+    requires_env_tags: ["regolith"]
+    mass_tier: ["heavy"]
+    complexity_tier: ["medium"]
+    description: ["Mines refined silicon and iron ore from regolith."]
+  
+  - name: Hydroponics_Bay 
+    inputs: { power: 15.0, water: 2.0, light: 1.0 }
+    outputs: { food: 0.5, oxygen: 0.2 }  
+    temp_range: [15.0, 30.0]
+    pressure_range: [0.8, 1.0]
+    max_gravity: 5.0
+    requires_env_tags: ["pressurized"]
+    mass_tier: ["heavy"]
+    complexity_tier: ["high"]
+    description: ["Provides food for 4 colnists."]
+
+  - name: Oxygen_Recycler 
+    inputs: { power: 10.0, waste: 0.5 }
+    outputs: { oxygen: 0.8, water: 0.3 } 
+    temp_range: [10.0, 40.0]
+    pressure_range: [0.5, 1.2]
+    max_gravity: 10.0
+    requires_env_tags: ["pressurized"]
+    mass_tier: ["standard"]
+    complexity_tier: ["high"]
+    description: ["Recycles human waste into breathable air."]
+
+  - name: Inflatable_Hab
+    inputs: { oxygen: 0.8, power: 5.0 }
+    outputs: { habitat_space: 4.0 }
+    provides_tags: ["pressurized", "exterior_mount"] 
+    temp_range: [-150.0, 120.0]
+    pressure_range: [0.0, 1.2]
+    max_gravity: 15.0
+    mass_tier: ["massive"]
+    complexity_tier: ["very_low"]
+    description: ["Provides pressurized indoor space for other modules or agents."]
+    
+  - name: LED_Grow_Array
+    inputs: { power: 10.0 }
+    outputs: { light: 1.0 }
+    temp_range: [-150.0, 120.0]
+    pressure_range: [0.0, 1.2]
+    max_gravity: 20.0
+    requires_env_tags: []
+    mass_tier: ["small"]
+    complexity_tier: ["low"]
+    description: ["Provides light for indoor hydroponic and aquaponic setups in any environment."]
+  
+  - name: Solar_Light_Pipe 
+    inputs: { solar_exposure: 1.0 }
+    outputs: { light: 1.2 } 
+    temp_range: [-150.0, 150.0]
+    pressure_range: [0.0, 2.0]
+    max_gravity: 10.0
+    requires_env_tags: ["exterior_mount"]
+    mass_tier: ["small"]
+    complexity_tier: ["low"]
+    description: ["A passive low cost system designed to capture and transmit natural sunlight into interior spaces."]
+  
+  - name: Atmospheric_Condenser 
+    inputs: { power: 20.0, solar_exposure: 0.2 }
+    outputs: { water: 1.5 }
+    temp_range: [-50.0, 60.0]
+    pressure_range: [0.5, 2.0]
+    max_gravity: 12.0
+    requires_env_tags: ["pressurized"]
+    mass_tier: ["standard"]
+    complexity_tier: ["low"]
+    description: ["Extracts trace moisture from the internal habitat air or pressurized greenhouses."]
+
+  - name: RTG_Nuclear_Generator 
+    inputs: {} # Passive generation
+    outputs: { power: 15.0 }
+    temp_range: [-200.0, 200.0]
+    pressure_range: [0.0, 10.0]
+    max_gravity: 40.0
+    requires_env_tags: []
+    mass_tier: ["standard"]
+    complexity_tier: ["high"]
+    description: ["Reliable, low-output power source ideal for Titan's surface or Lunar nights."]
+
+  - name: Sabatier_Reactor
+    inputs: { power: 30.0, waste: 0.2, hydrogen: 0.5 }
+    outputs: { water: 1.0, methane: 0.8 }
+    temp_range: [10.0, 50.0]
+    pressure_range: [0.8, 1.5]
+    max_gravity: 15.0
+    requires_env_tags: ["pressurized"]
+    mass_tier: ["heavy"]
+    complexity_tier: ["high"]
+    description: ["Advanced chemical processor to turn waste products into fuel and water."]
+  
+  - name: Ice_Melter_Drill 
+    inputs: { power: 35.0 }
+    outputs: { water: 5.0 }
+    temp_range: [-180.0, 20.0]
+    pressure_range: [0.0, 5.0]
+    max_gravity: 15.0
+    requires_env_tags: ["permafrost"] # New tag for icy terrain
+    mass_tier: ["heavy"]
+    complexity_tier: ["low"]
+    description: ["High-power drill used to melt and extract water from subsurface ice deposits."]
+
+  - name: Electrolysis_Plant 
+    inputs: { power: 25.0, water: 1.0 }
+    outputs: { hydrogen: 0.5, oxygen: 0.4 }
+    temp_range: [10.0, 45.0]
+    pressure_range: [0.8, 1.5]
+    max_gravity: 12.0
+    requires_env_tags: ["pressurized"]
+    mass_tier: ["heavy"]
+    complexity_tier: ["high"]
+    description: ["Splits water into hydrogen for fuel and oxygen for breathing."]
+
+  - name: Smelter_Foundry
+    inputs: { power: 40.0, iron_ore: 2.0 }
+    outputs: { structural_parts: 1.0 }
+    temp_range: [0.0, 100.0]
+    pressure_range: [0.0, 5.0]
+    max_gravity: 20.0
+    requires_env_tags: ["pressurized"]
+    mass_tier: ["heavy"]
+    complexity_tier: ["medium"]
+    description: ["Refines iron ore into structural components for base expansion."]
+
+  - name: Biomass_Composter 
+    inputs: { power: 5.0, food: 0.1 }
+    outputs: { waste: 0.7, fertilizer: 0.2 }
+    temp_range: [15.0, 35.0]
+    pressure_range: [0.7, 1.2]
+    max_gravity: 10.0
+    requires_env_tags: ["pressurized"]
+    mass_tier: ["heavy"]
+    complexity_tier: ["medium"]
+    description: ["Processes organic scraps into waste for the Sabatier and Recycler."]
+
+  - name: Methane_Fuel_Cell
+    inputs: { methane: 0.8, oxygen: 0.4 }
+    outputs: { power: 45.0, water: 0.2 }
+    temp_range: [-20.0, 50.0]
+    pressure_range: [0.5, 2.0]
+    max_gravity: 15.0
+    requires_env_tags: ["pressurized"]
+    mass_tier: ["heavy"]
+    complexity_tier: ["high"]
+    description: ["Emergency night-time power; converts methane back into electricity."]
+
+  - name: Silicon_Wafer_Lab
+    inputs: { power: 20.0, refined_silicon: 5.0 }
+    outputs: { electronics: 1.0 }
+    temp_range: [18.0, 25.0] # Very narrow range for precision manufacturing
+    pressure_range: [0.9, 1.1]
+    max_gravity: 5.0
+    requires_env_tags: ["pressurized", "dust_free"]
+    mass_tier: ["heavy"]
+    complexity_tier: ["ultra"]
+    description: ["High-precision facility to turn refined silicon into electronics."]
