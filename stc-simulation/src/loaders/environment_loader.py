@@ -1,13 +1,22 @@
 # C:\Projects\stc\stc-core\constraints\validator.py
 import json
 import yaml
-from jsonschema import validate
-from jsonschema.exceptions import ValidationError
+import os
+from pathlib import Path
 
-# Import Paths
-ENV_DATA = 'stc-core/data/all_environments.yaml'
-S_ENV_SING = 'stc-core/schemas/single_environment_schema.json'
-S_ENV_LIST = 'stc-core/schemas/environments.json'
+# 1. Get the directory where THIS script is located
+current_dir = Path(__file__).resolve().parent
+
+# 2. Go up two levels to reach C:\Projects\stc\
+# (One to get out of /src, one to get out of /stc-simulation)
+project_root = current_dir.parents[2]
+
+# 3. Join with the core repo path
+BASE_DIR = project_root / "stc-core" / "schemas"
+
+S_ENV_SING = os.path.join(BASE_DIR, 'single_environment_schema.json')
+S_ENV_LIST = os.path.join(BASE_DIR, 'environments.json')
+ENV_DATA = 'data/all_environments.yaml'
 
 def load_json_file(path):
     with open(path, 'r') as file:
@@ -37,6 +46,7 @@ def get_combined_schema(list_schema_path, single_schema_path):
     return list_schema
 
 def open_environments():
+    
     try:
         # Load data
         env_schema = get_combined_schema(S_ENV_LIST, S_ENV_SING)

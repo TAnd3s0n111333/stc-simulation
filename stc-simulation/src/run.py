@@ -1,7 +1,10 @@
+# Standard library imports
 import sys
+
+# Related third-party imports
 from jsonschema.exceptions import ValidationError
 
-# Custom Imports
+# Local application/library specific imports
 # Loaders
 from loaders.environment_loader import open_environments
 from loaders.module_loader import open_modules
@@ -25,12 +28,13 @@ from simulation.engine import run_simulation
 
 def main():
     print("==========================================")
-    print("STC SYSTEM: MISSION CONTROL")
+    print("STC SYSTEM: CLI Interface")
     print("==========================================\n")
 
     try:
         # --- PHASE 1: LOAD DATA ---
         print("--- LOAD DATA ---")
+
         env_data, env_schema = open_environments()
         mod_data, mod_schema = open_modules()
         mis_data, mis_schema, mission_profiles = open_missions()
@@ -44,8 +48,7 @@ def main():
         validate_agent_file(agt_data, agt_schema)
 
         # --- PHASE 3: INTERACTIVE SELECTION ---
-
-        # B. Select Mission (Goals & Duration)
+        # Select Mission (Goals & Duration)
         print("\n--- Available Missions ---")
         for i, mis in enumerate(mission_profiles):
             print(f"[{i}] {mis['id']} - {mis['description']}")

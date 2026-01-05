@@ -1,3 +1,5 @@
+
+
 def filter_compatible_modules(module_input, env_data: dict) -> tuple[list, dict]:
     # SAFETY CHECK: If the user passed the dict containing "modules", extract the list
     if isinstance(module_input, dict) and 'modules' in module_input:
