@@ -14,7 +14,7 @@ def optimize_loadout(valid_modules, environment, mission, agents):
     # 1. Decision Variables
     vars = {m['name']: pulp.LpVariable(f"n_{m['name']}", lowBound=0, cat='Integer') 
             for m in valid_modules}
-    colonists = pulp.LpVariable("n_colonists", lowBound=1, cat='Integer') # Min 1 human
+    colonists = pulp.LpVariable("n_colonists", lowBound=0, cat='Integer')
     robots = pulp.LpVariable("n_robots", lowBound=0, cat='Integer')
     
     # 2. Objective: Minimize total module count
@@ -27,6 +27,25 @@ def optimize_loadout(valid_modules, environment, mission, agents):
 
     # 4. Define Module Subsets for Power Logic
     add_power_constraint(valid_modules, agents, reqs, prob, vars)
+
+    add_labor_constraint(prob, valid_modules, vars, colonists, robots)
+
+    if reqs.get('module_num'):
+        module_req = reqs.get('module_num')
+        module_name = module_req['metric']
+        module_num = module_req['minimum']
+        module_num = int(module_num)
+
+        module_name = module_name.replace(" ", "_")
+        module_name = str(module_name)
+
+        # 1. Locate the specific data dictionary from your list
+        target_data = next((m for m in valid_modules if m['name'] == module_name), None)
+
+        # 2. Add the constraint to the solver using the name we found
+        if target_data:
+            prob += vars[module_name] >= module_num, 'Minimum Modules Required by Mission'
+
 
     # --- PRESSURIZATION LINKAGE ---
     space_providers = [m for m in valid_modules if 'pressurized' in m.get('provides_tags', [])]
@@ -46,18 +65,20 @@ def optimize_loadout(valid_modules, environment, mission, agents):
                                     for m in space_providers])
 
     # Constraint: Every human must have a pressurized spot
-    prob += total_space_provided >= total_humans, "Crew_Housing_Requirement"                              
-    
+    prob += total_space_provided >= total_humans, "Crew_Housing_Requirement"  
+
     # --- GENERAL RESOURCE ACCUMULATION ---
-    resources = ['power', 'food', 'oxygen', 'water', 'waste', 'light']
+    resources = ['power', 'food', 'oxygen', 'water', 'waste', 'light', 'hydrogen']
     for res in resources:
         add_resource_constraint(prob, res, valid_modules, vars, initial, reqs, duration, agents, colonists, robots)
 
     # 5. Solve
     status = prob.solve(pulp.PULP_CBC_CMD(msg=0))
-    
+
     if pulp.LpStatus[status] == 'Optimal':
         loadout = {name: int(var.varValue) for name, var in vars.items() if var.varValue > 0}
+
         return loadout, int(colonists.varValue), int(robots.varValue)
-    
-    return None
+
+
+    return None, 0, 0

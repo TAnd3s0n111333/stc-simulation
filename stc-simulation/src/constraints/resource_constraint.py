@@ -13,12 +13,16 @@ def add_resource_constraint(prob, resource_name, valid_modules, vars, initial, r
 
     total_agent_upkeep = (colonists * c_drain * duration) + (robots * r_drain * duration)
 
-    res_req = reqs.get(resource_name) or reqs.get(f"{resource_name}_resilience")
-    target = res_req.get('minimum', 0) if isinstance(res_req, dict) else 0
     
+    try:
+        res_req = reqs.get(resource_name) or reqs.get(f"{resource_name}_resilience")
+        target = res_req.get('minimum', 0) if isinstance(res_req, dict) else 0
+    except:
+        None
+
     net_flow = []
     # Integration of sin(x) over 24h gives an average output of ~31.8%
-    SOLAR_CAPACITY_FACTOR = 0.318 
+    SOLAR_CAPACITY_FACTOR = 1 
 
     for m in valid_modules:
         out_val = m.get('outputs', {}).get(resource_name, 0)

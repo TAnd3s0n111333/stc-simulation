@@ -1,11 +1,40 @@
 import math
 
-def run_simulation(module_list, selected_env, duration_hours=72):
+def run_simulation(module_list, selected_env, n_hum, n_rob, duration_hours):
     # 1. Setup Resources and Environment
     resources = selected_env.get('initial_resources', {}).copy()
     base_tags = set(selected_env.get('tags', []))
     logs = []
+
+    complexity_index = {
+        'very_low': 0.5, # Basic structural parts, no electronics
+        'low': 1, # Wires, 
+        'medium': 2.5,
+        'high': 5,
+        'ultra': 10
+    }
     
+    total_labour_req = 0
+    total_labour_pro = 0
+    total_labour = 0
+
+    for m in module_list:
+        # 1. Extract raw data
+        base_labor = 2
+
+        comp = m.get('complexity_tier', 1.0)
+
+        comp = complexity_index[comp[0]]
+
+        total_labour_req += (base_labor * comp)
+
+        total_labour_pro = (n_hum * 8) + (n_rob * 24)
+
+        # Check if Labour Produced is Greater than Labour Required
+        total_labour = total_labour_pro - total_labour_req
+
+        resources["labour"] = total_labour
+
     for hour in range(duration_hours):
         # solar_mult: Peak at 1.0 (noon), 0.0 at night (6pm-6am)
         # Using (hour % 24) to track the daily cycle
@@ -78,10 +107,17 @@ def run_simulation(module_list, selected_env, duration_hours=72):
                 "failure_reason": f"CRITICAL FAILURE: Power Grid Collapse at night.",
                 "logs": logs
             }
+        
+        if total_labour < 0:
+            return {
+                "success": False, "hour": hour, "resources": resources,
+                "failure_reason": f"CRITICAL FAILURE: Labour Needed exceeded Labour Provided.",
+                "logs": logs
+            }
 
         # 7. Logging
         if hour % 12 == 0:
-            log_entry = f"Hour {hour:03d} | Solar: {solar_mult:.2f} | " + \
+            log_entry = f"Hour {hour:03d} | " + \
                         " | ".join([f"{k.capitalize()}: {v}" for k, v in resources.items()])
             logs.append(log_entry)
 

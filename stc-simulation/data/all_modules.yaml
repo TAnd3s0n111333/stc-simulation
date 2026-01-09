@@ -1,6 +1,6 @@
 modules:
   - name: Solar_Array
-    inputs: { solar_exposure: 1.0 }
+    inputs: {}
     outputs: { power: 50.0 }
     temp_range: [-150.0, 120.0]
     pressure_range: [0.0, 2.0]
@@ -8,7 +8,7 @@ modules:
     requires_env_tags: []
     mass_tier: ["massive"]
     complexity_tier: ["medium"]
-    description: ["Generates power from solar energy, power ouput tied to solar flux and day-night cycle."]
+    description: ["Generates power from solar energy, power output tied to solar flux and day-night cycle."]
 
   - name: Battery_Array_Lithium
     inputs: { power: 0.5 } # Parasitic drain to keep systems warm
@@ -98,17 +98,6 @@ modules:
     complexity_tier: ["low"]
     description: ["Extracts trace moisture from the internal habitat air or pressurized greenhouses."]
 
-  - name: RTG_Nuclear_Generator 
-    inputs: {} # Passive generation
-    outputs: { power: 15.0 }
-    temp_range: [-200.0, 200.0]
-    pressure_range: [0.0, 10.0]
-    max_gravity: 40.0
-    requires_env_tags: []
-    mass_tier: ["standard"]
-    complexity_tier: ["high"]
-    description: ["Reliable, low-output power source ideal for Titan's surface or Lunar nights."]
-
   - name: Sabatier_Reactor
     inputs: { power: 30.0, waste: 0.2, hydrogen: 0.5 }
     outputs: { water: 1.0, methane: 0.8 }
@@ -174,6 +163,17 @@ modules:
     mass_tier: ["heavy"]
     complexity_tier: ["high"]
     description: ["Emergency night-time power; converts methane back into electricity."]
+
+  - name: RTG_Nuclear_Generator 
+    inputs: {} # Passive generation
+    outputs: { power: 15.0 }
+    temp_range: [-200.0, 200.0]
+    pressure_range: [0.0, 10.0]
+    max_gravity: 40.0
+    requires_env_tags: []
+    mass_tier: ["standard"]
+    complexity_tier: ["high"]
+    description: ["Reliable, low-output power source ideal for Titan's surface or Lunar nights."]
 
   - name: Silicon_Wafer_Lab
     inputs: { power: 20.0, refined_silicon: 5.0 }

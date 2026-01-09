@@ -10,7 +10,7 @@ environments:
     solar_flux: 590.0
     terrain: rocky
     tags: ["regolith", "perchlorates", "permafrost"]
-    initial_resources: { power: 200, oxygen: 50, light: 10, water: 10}
+    initial_resources: { power: 200, oxygen: 50, light: 10, water: 10, methane: 20}
 
   - id: moon_surface
     name: Moon Surface
@@ -23,7 +23,7 @@ environments:
     solar_flux: 1361.0
     terrain: dusty
     tags: ["regolith", "helium3"]
-    initial_resources: { power: 50 }
+    initial_resources: { power: 200, oxygen: 50, light: 10, water: 10, methane: 20 }
 
   - id: venus_high_atmo
     name: Venusian Upper Atmosphere
@@ -36,7 +36,7 @@ environments:
     solar_flux: 2600.0
     terrain: aerial
     tags: ["acid_clouds"]
-    initial_resources: { power: 10 }
+    initial_resources: { power: 200, oxygen: 50, light: 10, water: 20 }
 
   - id: titan_surface
     name: Titan Surface

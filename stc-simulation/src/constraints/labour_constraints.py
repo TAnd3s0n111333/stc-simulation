@@ -1,4 +1,5 @@
 import pulp
+import math
 
 def add_labor_constraint(prob, valid_modules, vars, colonists, robots):
     """
@@ -7,79 +8,43 @@ def add_labor_constraint(prob, valid_modules, vars, colonists, robots):
     robots: The PuLP variable for number of robots
     """
 
-    # Labor Logic
-    total_labor_needed = pulp.lpSum([vars[m['name']] * m.get('labor_required', 1) for m in valid_modules])
-    prob += (colonists * 8) + (robots * 24) >= total_labor_needed, "Labor_Constraint"
+    mass_index = {
+        'micro': 0.1, # Sensors, tools, small mechanical parts.
+        'small': 0.5, # LED arrays, small pipes.
+        'standard': 1, # Oxygen recyclers, batteries.
+        'heavy': 2.5, # Sabatier reactors, smelters.
+        'massive': 10 # Solar arrays, large habitats.
+    }
+
+    complexity_index = {
+        'very_low': 0.5, # Basic structural parts, no electronics
+        'low': 1, # Wires, 
+        'medium': 2.5,
+        'high': 5,
+        'ultra': 10
+    }
+
+    labor_terms = []
+
+    for m in valid_modules:
+
+        # 1. Extract raw data
+        base_labor = 2
+
+        comp = m.get('complexity_tier', 1.0)
+
+        comp = complexity_index[comp[0]]
+        
+        # 2. Apply your NEW equation
+        # This determines the "Cost" of one single unit of this module
+        mod_labor_coefficient = (base_labor * comp)
+        
+        # 3. Attach it to the PuLP variable
+        labor_terms.append(vars[m['name']] * mod_labor_coefficient)
+
+    # 4. Finalize the bucket
+    total_demand = pulp.lpSum(labor_terms)
+    total_supply = (colonists * 8) + (robots * 24)
     
-    # --- STEP A: CALCULATE TOTAL DEMAND (The "Holes" in the bucket) ---
-    # We look at every module the solver MIGHT pick and multiply it by its labor need.
-    total_labor_needed = pulp.lpSum([
-        vars[m['name']] * m.get('labor_required', 0) 
-        for m in valid_modules
-    ])
-
-    # --- STEP B: CALCULATE TOTAL SUPPLY (The "Filler") ---
-    # Humans provide 8 hours of high-quality work.
-    # Robots provide 24 hours of tireless work.
-    human_supply = colonists * 8
-    robot_supply = robots * 24
+    prob += total_supply >= total_demand, "Advanced_Labor_Constraint"
     
-    total_labor_supply = human_supply + robot_supply
-
-    # --- STEP C: THE LINKAGE ---
-    # This is the actual constraint line. 
-    # The solver cannot find a solution where this is False.
-    prob += total_labor_supply >= total_labor_needed, "Labor_Staffing_Balance"
-
-"""
-Low tech:
-  Humans → Operation → Output
-
-Mid tech:
-  Robots → Operation
-  Humans → Maintenance
-
-High tech:
-  Automation → Operation
-  Robots → Maintenance
-  Humans → Oversight
-"""
-
-def labour_calculator(mass_val, com_val, size, automation):
-
-    base_weight = 500
-
-    if size == 'small':
-        size_multi = 0.5
-    elif size == 'standard':
-        size_multi = 1
-    elif size == "large":
-        size_multi = 1.5
-
-    if mass_val == "micro": # Sensors, tools, small mechanical parts.
-        mass_scalar = 0.1
-    elif mass_val == "small": # LED arrays, small pipes.
-        mass_scalar = 0.5
-    elif mass_val == "standard": # Oxygen recyclers, batteries.
-        mass_scalar = 1
-    elif mass_val == "heavy": # Sabatier reactors, smelters.
-        mass_scalar = 2.5
-    elif mass_val == "massive": # Solar arrays, large habitats.
-        mass_scalar = 10
-    
-    if com_val == "very_low":
-        com_scalar = 0.5
-    elif com_val == "low":
-        com_scalar == 1
-    elif com_val == "medium":
-        com_scalar == 2.5
-    elif com_val == "high":
-        com_scalar == 5
-    elif com_val == "ultra":
-        com_scalar == 10
-    
-    structual_parts_req = mass_scalar * base_weight * size_multi
-
-    electronic_parts_req = size_multi * com_scalar
-
-    return structual_parts_req, electronic_parts_req

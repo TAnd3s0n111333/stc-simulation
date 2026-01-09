@@ -8,7 +8,7 @@ import pulp
 def add_power_constraint(valid_modules, agents, reqs, prob, vars):
 
     # Steady mods provide power regardless of time (RTGs, Sabatier if it generates power, etc)
-    steady_mods = [m for m in valid_modules if "Solar" not in m['name'] and "Battery" not in m['name'] and m['outputs'].get('power', 0) > 0]
+    steady_mods = [m for m in valid_modules if "Solar_Array" not in m['name'] and "Battery" not in m['name'] and m['outputs'].get('power', 0) > 0]
     battery_mods = [m for m in valid_modules if "Battery" in m['name']]
     
     # --- NIGHTTIME POWER BALANCE (The "No Storage" Rule) ---
@@ -30,13 +30,16 @@ def add_power_constraint(valid_modules, agents, reqs, prob, vars):
     prob += night_power_available >= (base_load_hourly + crew_power_per_hour), "Nighttime_Power_Balance"
 
     # --- POWER RESILIENCE GOAL ---
-    power_req = reqs.get('power', {})
-    power_target = power_req.get('minimum', 0)
+    if reqs.get('power', {}):
+        power_req = reqs.get('power', {})
+        power_target = power_req.get('minimum', 0)
 
-    if power_target > 0:
-        # We look for the 'capacity' output in our battery modules
-        total_capacity = pulp.lpSum([vars[m['name']] * m.get('outputs', {}).get('capacity', 0) 
-                                    for m in valid_modules if "Battery" in m['name']])
+        if power_target > 0:
+            # We look for the 'capacity' output in our battery modules
+            total_capacity = pulp.lpSum([vars[m['name']] * m.get('outputs', {}).get('capacity', 0) 
+                                        for m in valid_modules if "Battery" in m['name']])
+            
+            # The Solver is now forced to pick enough batteries to hit 200.0
+            prob += total_capacity >= power_target, "Force_Power_Storage_Capacity"
+
         
-        # The Solver is now forced to pick enough batteries to hit 200.0
-        prob += total_capacity >= power_target, "Force_Power_Storage_Capacity"

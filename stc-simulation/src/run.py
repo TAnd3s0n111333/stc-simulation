@@ -78,13 +78,13 @@ def main():
 
         if recommended_modules:
             print("Optimal Loadout Found:")
+            print("Modules: ")
             for mod_name, count in recommended_modules.items():
-                print("Modules: ")
                 print(f"   - {count}x {mod_name}")
 
             print("\nAgents: ")
             print(f"   - {n_hum}x Humans")
-            print(f"   - {count}x Robots")
+            print(f"   - {n_rob}x Robots")
             
         else:
             print("❌ IMPOSSIBLE: No combination of modules can meet these goals.")
@@ -102,9 +102,10 @@ def main():
             actual_module_data = next(m for m in valid_modules if m['name'] == mod_name)
             for _ in range(count):
                 final_sim_list.append(actual_module_data.copy())
+ 
 
         # 2. RUN SIM: Pass the list of DICTIONARIES, not the dictionary of COUNTS
-        sim_results = run_simulation(final_sim_list, selected_env, duration_hours=duration)
+        sim_results = run_simulation(final_sim_list, selected_env, n_hum, n_rob, duration_hours=duration)
 
         # 3. REPORT RESULTS
         if sim_results['success']:
@@ -151,6 +152,7 @@ def main():
             print("MISSION ACCOMPLISHED")
             print(f"Colony is stable after {duration} hours.")
             # Print a neat summary of final stockpiles
+
             for res, val in final_resources.items():
                 print(f"   > {res.capitalize()}: {val}")
         else:
