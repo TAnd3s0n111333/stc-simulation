@@ -34,6 +34,9 @@ def run_simulation(module_list, selected_env, n_hum, n_rob, duration_hours):
         total_labour = total_labour_pro - total_labour_req
 
         resources["labour"] = total_labour
+    
+
+    duration_hours = duration_hours + 1
 
     for hour in range(duration_hours):
         # solar_mult: Peak at 1.0 (noon), 0.0 at night (6pm-6am)
@@ -120,6 +123,7 @@ def run_simulation(module_list, selected_env, n_hum, n_rob, duration_hours):
             log_entry = f"Hour {hour:03d} | " + \
                         " | ".join([f"{k.capitalize()}: {v}" for k, v in resources.items()])
             logs.append(log_entry)
+    
 
     return {
         "success": True, "hour": duration_hours, "resources": resources, "logs": logs

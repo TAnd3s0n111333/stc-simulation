@@ -19,7 +19,7 @@ modules:
     requires_env_tags: ["pressurized"]
     mass_tier: ["standard"]
     complexity_tier: ["medium"]
-    description: ["Stores collected power for when ouput is less than input, discharging power as required."]
+    description: ["Stores collected power for when output is less than input, discharging power as required."]
 
   - name: Regolith_Sifter 
     inputs: { power: 25.0 }
@@ -41,7 +41,7 @@ modules:
     requires_env_tags: ["pressurized"]
     mass_tier: ["heavy"]
     complexity_tier: ["high"]
-    description: ["Provides food for 4 colnists."]
+    description: ["Provides food for 4 colonists."]
 
   - name: Oxygen_Recycler 
     inputs: { power: 10.0, waste: 0.5 }

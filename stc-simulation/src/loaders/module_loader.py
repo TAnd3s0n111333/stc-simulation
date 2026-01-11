@@ -55,7 +55,7 @@ def open_modules():
         # Now this will work because the root key is 'modules'
         module_profiles = mod_data['modules']
         print(f"Successfully loaded {len(module_profiles)} modules.")
-        return mod_data, mod_schema
+        return mod_data, mod_schema, module_profiles
     except FileNotFoundError as e:
         print(f"Error: Failed to find root key. Details: {e}") 
         exit()

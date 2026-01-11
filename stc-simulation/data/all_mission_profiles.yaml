@@ -75,4 +75,4 @@ missions:
         minimum: 4.0
       module_num:
         metric: "Inflatable_Hab"
-        minimum: 1.0
+        minimum: 2.0

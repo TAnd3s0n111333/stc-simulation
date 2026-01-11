@@ -58,5 +58,15 @@ def filter_compatible_modules(module_input, env_data: dict) -> tuple[list, dict]
         else:
             report[name] = errors
 
-    print(f"{len(valid_modules)} modules passed physics checks.")
+    print(f"{len(valid_modules)} modules passed physics checks:\n")
+
+    for m in valid_modules:
+        print(m['name'].replace("_", " "))
+    
+    print(f"\n{len(report)} modules failed physics checks for x reason:\n")
+
+    for i, m in report.items():
+        print(f"{i}: {m[0]}")
+        
+
     return valid_modules, report

@@ -1,8 +1,10 @@
 # Standard library imports
 import sys
+import itertools
 
 # Related third-party imports
 from jsonschema.exceptions import ValidationError
+from tabulate import tabulate
 
 # Local application/library specific imports
 # Loaders
@@ -28,15 +30,18 @@ from simulation.engine import run_simulation
 
 def main():
     print("==========================================")
-    print("STC SYSTEM: CLI Interface")
+    print("STC SYSTEM: CLI")
     print("==========================================\n")
 
     try:
+        # Setup:
+        print("--- SETUP ---")
+
         # --- PHASE 1: LOAD DATA ---
         print("--- LOAD DATA ---")
 
         env_data, env_schema = open_environments()
-        mod_data, mod_schema = open_modules()
+        mod_data, mod_schema, module_profiles = open_modules()
         mis_data, mis_schema, mission_profiles = open_missions()
         agt_data, agt_schema = open_agents()
 
@@ -47,13 +52,118 @@ def main():
         validate_mission_file(mis_data, mis_schema)
         validate_agent_file(agt_data, agt_schema)
 
+        print("\n--- CUSTOMIZE MODULE LIST ---")
+
+        print("--- ALL MODULES ---")
+
+        removed_modules = []
+        mod_data = mod_data['modules']
+
+        headers = ["ID", "Name", "Description"]
+
+        nested_name_data = []
+        nested_desc_data = []
+
+        flat_name_data = []
+        flat_desc_data = []
+
+        for m in module_profiles:
+            nested_name_data.append([m['name'].replace("_", " ")])
+            nested_desc_data.append([m['description'][0]])
+
+        flat_name_data = [item for sublist in nested_name_data for item in sublist]
+        flat_desc_data = [item for sublist in nested_desc_data for item in sublist]
+
+        table_data1 = itertools.zip_longest(flat_name_data, flat_desc_data)
+
+        table = tabulate(
+            table_data1,
+            headers,
+            tablefmt="fancy_grid",
+            showindex=("always")
+        )
+        
+        print(table)
+
+        while True:
+            if len(removed_modules) >= 1:
+                print("\nRemoved Modules:")
+                for m in removed_modules:
+                    m = int(m)
+                    removed_mod_data = mod_data[m]
+                    print(removed_mod_data['name'].replace("_", " "))
+
+            mod_input = input("\nSelect Module ID to Remove: ").strip().replace(",", "")
+
+            if mod_input == "":
+                print("\nFinalized Removed Modules:")
+                if len(removed_modules) == 0:
+                    print("None")
+                else:
+                    for m in removed_modules:
+                        m = int(m)
+                        removed_mod_data = mod_data[m]
+                        print(removed_mod_data['name'].replace("_", " "))
+                break
+
+            else:
+                removed_modules.append(mod_input)
+
+        for i in removed_modules:
+            i = int(i)
+            del mod_data[i]
+
+        new_mod_data = {}
+        
+        new_mod_data['modules'] = mod_data
+
         # --- PHASE 3: INTERACTIVE SELECTION ---
         # Select Mission (Goals & Duration)
         print("\n--- Available Missions ---")
-        for i, mis in enumerate(mission_profiles):
-            print(f"[{i}] {mis['id']} - {mis['description']}")
+
+        nested_name_data = []
+        nested_desc_data = []
+        nested_req_data = []
+
+        for mis in mission_profiles:
+            nested_name_data.append(mis['id'].replace('_', ' ').lower().title())
+            nested_desc_data.append(mis['description'])
+            nested_req_data.append(mis['requirements'])
+
+        headers = ["ID", "Name", "Description", "Requirements"]
+
+        combined_data = []
+
+        # Loop through the lists by index
+        for i in range(len(nested_name_data)):
+            # 1. Format the requirements dictionary into a single readable string
+            req_parts = []
+            for req_name, details in nested_req_data[i].items():
+                val = details.get('minimum', details.get('maximum'))
+                req_parts.append(f"• {req_name.replace('_', ' ').title()}: {val} {details['metric']}")
+            
+            req_string = "\n".join(req_parts) # Join with newlines for a clean cell
+            
+            # 2. Add a single "column" of data for this mission
+            combined_data.append([
+                nested_name_data[i], 
+                nested_desc_data[i], 
+                req_string
+            ])
         
-        mis_choice = int(input("Select Mission Profile: "))
+        max_widths = [None, None, 30]
+
+        table = tabulate(
+            combined_data,
+            headers,
+            maxcolwidths=max_widths,
+            tablefmt="fancy_grid",
+            showindex=("always")
+        )
+            
+        print(table)
+        
+        mis_choice = int(input("\nSelect Mission Profile: "))
         selected_mission = mission_profiles[mis_choice]
         target_environment = selected_mission['environment']
 
@@ -68,19 +178,19 @@ def main():
 
         # 3. Now call the optimizer with the DICTIONARY, not the string
 
-        modules = mod_data['modules']
+        modules = new_mod_data['modules']
         valid_agents = agt_data['agents']
 
         print(f"\nStep 2: Checking Physics for {len(modules)} modules")
-        valid_modules, module_error_report = filter_compatible_modules(mod_data, selected_env)
+        valid_modules, module_error_report = filter_compatible_modules(new_mod_data, selected_env)
 
         recommended_modules, n_hum, n_rob = optimize_loadout(valid_modules, selected_env, selected_mission, valid_agents)
 
         if recommended_modules:
-            print("Optimal Loadout Found:")
+            print("\nOptimal Loadout Found:")
             print("Modules: ")
             for mod_name, count in recommended_modules.items():
-                print(f"   - {count}x {mod_name}")
+                print(f"   - {count} x {mod_name}")
 
             print("\nAgents: ")
             print(f"   - {n_hum}x Humans")
