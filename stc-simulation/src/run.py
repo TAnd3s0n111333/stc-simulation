@@ -29,6 +29,12 @@ from planning.solver import optimize_loadout
 from simulation.engine import run_simulation
 
 def main():
+    """
+    Description: 
+
+    Complexity:
+    """
+
     print("==========================================")
     print("STC SYSTEM: CLI")
     print("==========================================\n")
@@ -140,7 +146,7 @@ def main():
             req_parts = []
             for req_name, details in nested_req_data[i].items():
                 val = details.get('minimum', details.get('maximum'))
-                req_parts.append(f"• {req_name.replace('_', ' ').title()}: {val} {details['metric']}")
+                req_parts.append(f"• {req_name.replace('_', ' ').title()}: {val} {details['metric'].replace("_", " ")}")
             
             req_string = "\n".join(req_parts) # Join with newlines for a clean cell
             
@@ -190,11 +196,11 @@ def main():
             print("\nOptimal Loadout Found:")
             print("Modules: ")
             for mod_name, count in recommended_modules.items():
-                print(f"   - {count} x {mod_name}")
+                print(f"   - {count} x {mod_name.replace("_", " ")}")
 
             print("\nAgents: ")
-            print(f"   - {n_hum}x Humans")
-            print(f"   - {n_rob}x Robots")
+            print(f"   - {n_hum} x Humans")
+            print(f"   - {n_rob} x Robots")
             
         else:
             print("❌ IMPOSSIBLE: No combination of modules can meet these goals.")

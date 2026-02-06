@@ -1,5 +1,4 @@
 
-
 def filter_compatible_modules(module_input, env_data: dict) -> tuple[list, dict]:
     # SAFETY CHECK: If the user passed the dict containing "modules", extract the list
     if isinstance(module_input, dict) and 'modules' in module_input:
@@ -51,7 +50,7 @@ def filter_compatible_modules(module_input, env_data: dict) -> tuple[list, dict]
         for tag in req_tags:
             if tag == 'pressurized': continue 
             if tag not in env_tags:
-                errors.append(f"Tag: Missing '{tag}'.")
+                errors.append(f"Tag: Missing '{tag.replace("_", " ")}'.")
 
         if not errors:
             valid_modules.append(module)
@@ -66,7 +65,7 @@ def filter_compatible_modules(module_input, env_data: dict) -> tuple[list, dict]
     print(f"\n{len(report)} modules failed physics checks for x reason:\n")
 
     for i, m in report.items():
-        print(f"{i}: {m[0]}")
+        print(f"{i.replace("_", " ")}: {m[0]}")
         
 
     return valid_modules, report
